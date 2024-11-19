@@ -1,13 +1,20 @@
 name: iris-community
 volumes:
-    iris-data:
-        driver: local
+  iris-data:
+    driver: local
+  iris-db:
+    driver: local
 services:
-    iris:
-        image: containers.intersystems.com/intersystems/iris-community:2024.2
-        container_name: iris-community
-        ports:
-            - 1972:1972
-            - 52773:52773
-        volumes:
-            - iris-data:/usr/irissys
+  iris: # nome da instância
+    image: containers.intersystems.com/intersystems/iris-community:2024.2
+    container_name: iris # nome do container no docker
+    hostname: server # hostname do container na rede
+    restart: unless-stopped
+    ports:
+      - 1972:1972 # superserver
+      - 52773:52773 # web portal
+    volumes:
+      - iris-data:/usr/irissys
+      - iris-db:/db
+      - ./csp:/usr/irissys/csp/custom # crie uma pasta /csp no mesmo diretório do docker-compose para passer arquivos csp (opcional)
+      - ./backup:/backup # crie uma pasta /csp no mesmo diretório do docker-compose para passer arquivos de backup (opcional)
